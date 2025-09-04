@@ -16,6 +16,7 @@ body {
 
 /* Main game container */
 .gameContainer {
+  position: relative;
   width: 800px;
   background: #ffffff;
   border-radius: 12px;
@@ -68,6 +69,7 @@ body {
 }
 
 .mysteryStage {
+  position: absolute;
   width: 350px;
   height: 320px;
   background: black;
@@ -75,7 +77,19 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
+  left: 10px;
+  opacity: 0;
 }
+
+.leftHiddenpanel {
+  position: absolute;
+  width: 350px;
+  height: 320px;
+  background-color: red;
+  left: 10px;
+  border-radius: 10px;
+} 
 
 .mysteryQuestion {
   font-size: 80px;
