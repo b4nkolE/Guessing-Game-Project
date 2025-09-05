@@ -29,7 +29,7 @@ let showButtonUsed = false;
 
 //Selecting elements
 const gameContainer = document.getElementById("gameContainer"); //the entire Div where the game is based
-const helpBanner = document.getElementById("helpBanner"); // The how to play button. 
+const helpButton = document.getElementById("helpButton"); // The how to play button. 
 const gameCard = document.getElementById("gameCard"); // check back.
 const leftPanel = document.getElementById("leftPanel"); // the left panel that houses the mystery sign
 const mysteryStage = document.getElementById("mysteryStage");
@@ -79,7 +79,7 @@ showButton.addEventListener("click", () => {
 });
 
 //How to play
-helpBanner.addEventListener("click", () => {
+helpButton.addEventListener("click", () => {
     alert(`
         Under the box is a picture.
         
@@ -111,7 +111,7 @@ const arrayOfPictures = ['images/image1.jpeg', 'images/image2.jpeg', 'images/ima
                         'images/image4.jpeg', 'images/image5.jpeg', 'images/image6.jpeg',
                         'images/image7.jpeg', 'images/image8.jpeg', 'images/image9.jpeg'];
 const randomPlacements = Math.floor(Math.random() * arrayOfPictures.length);
-const selectAtRandom = arrayOfPictures[randomPlacements];
+let selectAtRandom = arrayOfPictures[randomPlacements];
 
 //after randomizing, placing the random pictures into the div
 const hiddenImg = document.createElement('img');
@@ -126,36 +126,51 @@ function updateCounters(){
     correctCounter.textContent = correct;
 }
 
+function pickNewHiddenImage(){
+    //filter out current image shown
+    const possibleImages = arrayOfPictures.filter(path => path !== selectAtRandom);
+
+    //pick from the ones left.
+    const newPicturesArray = Math.floor(Math.random() * possibleImages.length);
+    const newHidden = newPicturesArray[newPicturesArray];
+
+    selectAtRandom = newHidden;
+    hiddenImg.src = selectAtRandom;
+}
+
 
 
 //Logic to handle the guessing
 function handleGuess(selectedPath) {
-   
+  if (selectedPath === selectAtRandom) {
+    // Reveal when correct
+    mysteryStage.style.zIndex = 0;
 
-    if(selectedPath === selectAtRandom){
-        //reveals picture only if guess is correct.
-         mysteryStage.style.opacity = 0;
-        correct++;
-        chances--;
-        updateCounters(); //calls the function to update them at once.
+    correct++;
+    chances--;
+    updateCounters();
 
-        if(correct >= 3) {
-            alert("You have won the game");
-            location.reload();
-        } else {
-            //Hide the picture after the counter goes up by 1.
-            setTimeout(() => {
-                mysteryStage.style.opacity = 1;
-            }, 1000); // 1 second reveal then it covers up again.
-        }
-    } else {
-        chances--;
-        updateCounters();
-        if(chances <= 0 ){
-            alert("Game Over");
-            location.reload();
-        }
+    if (correct >= 3) {
+      alert("You have won the game!");
+      location.reload();
+      return;
     }
+
+    setTimeout(() => {
+        mysteryStage.style.zIndex = 1;
+        pickNewHiddenImage();
+    }, 1000);
+    // After short reveal, hide and change picture
+  } else {
+    // Wrong guess, no reveal, just reduce chances
+    chances--;
+    updateCounters();
+
+    if (chances <= 0) {
+      alert("Game Over");
+      location.reload();
+    }
+  }
 }
 
 
